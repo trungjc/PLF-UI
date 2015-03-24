@@ -1,0 +1,749 @@
+@import "../bootstrap/less/mixins.less";
+
+//======================================================//
+//                  MIXINS EXO PLATFORM                 //
+//======================================================//
+
+// Gradient Bar Colors for buttons and alerts
+// --------------------------------------------------
+.gradientBarEXO(@primaryColor, @secondaryColor, @borderColor, @textColor: #fff, @textShadow: 0 0 0 transparent) {
+	color: @textColor;
+	text-shadow: @textShadow;
+	#gradient > .vertical(@primaryColor, @secondaryColor);
+	border: 1px solid @borderColor;
+}
+
+// Create Button background
+// --------------------------------------------------
+.buttonBackgroundEXO(@startColor, @endColor, @borderColor, @btnColor: #fff, @textShadow: none) {
+  // gradientBar will set the background to a pleasing blend of these, to support IE<=9
+  .gradientBarEXO(@startColor, @endColor, @borderColor, @btnColor, @textShadow);
+  *background-color: @endColor; // Darken IE7 buttons by default so they stand out more given they won't have borders
+  .reset-filter();
+  // in these cases the gradient won't cover the background, so we override
+  &:hover, &:focus, &:active, &.active, &.disabled, &[disabled] {
+  	color: @btnColor;
+  	background-color: @endColor;
+  	*background-color: darken(@endColor, 5%);
+  }
+  &.disabled, &[disabled] {
+    color: @btnDisableColor;
+  }
+  // Hover/focus state
+  &:hover {
+    text-decoration: none;
+    background-position: 0 -15px;
+    .transition(background-position .1s linear);
+  }
+
+}
+
+// FONTS
+// --------------------------------------------------
+#font {
+	#family {
+		.sans-serif-bold() {
+			font-family: @sansBoldFontFamily;
+		}
+	}
+
+	.sans-serif-bold(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+		#font > #family > .sans-serif-bold;
+		#font > .shorthand(@size, @weight, @lineHeight);
+	}
+}
+
+
+
+// Status Elements
+// --------------------------------------------------
+#StatusElements {
+	.StatusHover(@startColor : @baseBackground, @endColor : @primaryBackground,@boxShadow: 0 1px 2px 0px rgba(255,255,255,0)){
+		#gradient > .vertical(@startColor,@endColor);
+		border: 1px solid @borderColor;
+		.border-radius(@borderRadiusSmall);
+		.box-shadow(@boxShadow);
+		&:active,&:focus {
+			.StatusActive();
+		}
+	}
+	.StatusActive(@boxShadow: 0px 2px 6px 0 rgba(0, 0, 0, 0.15) inset) {
+		.box-shadow(@boxShadow);
+		border: 1px solid #c7c7c7;
+		.border-radius(@borderRadiusSmall);
+		background-color: @primaryBackground;
+	}
+}
+
+// Action With Label
+// --------------------------------------------------
+.uiActionWithLabel(){
+	border: 1px solid transparent;
+	cursor: pointer;
+	display: inline-block;
+	padding: 3px 8px;
+	line-height: @baseLineHeight;
+    color: @textColor;
+	&:hover {
+		#StatusElements .StatusHover();
+	}
+	.uiIconMiniArrowDown{
+		margin-left: 5px;
+	}
+}
+
+// actionIcon
+// --------------------------------------------------
+.actionContainer() {
+	white-space: nowrap;
+}
+.actionIcon(){
+	.uiActionWithLabel;
+	padding:2px 4px;
+	vertical-align: middle;
+	&:active,&:focus,&.active {
+		#StatusElements > .StatusActive(0px 0px 10px 0 rgba(0, 0, 0, 0.15) inset);
+	}
+}
+
+// error, noticeEmpty
+// --------------------------------------------------
+.error() {
+	color: @errorColor;
+}
+.noticeEmpty() {
+	color: @errorColor;
+}
+
+.noticeEmpty() {
+	color: @baseColorLight;
+}
+
+// Title
+// --------------------------------------------------
+.title(@color: @textColor,@shadowColor: #cdcdcd,@fonSize : 18px,@fontWeight: @headingsFontWeight,@lineHeight: @baseLineHeight) {
+	color: @color;
+	#font > .sans-serif-bold(@fonSize,@fontWeight,@lineHeight);
+}
+
+.titleWithBorder() {
+	position: relative;
+	overflow: hidden;
+	&:after {
+		border-bottom: 1px solid #dadada;
+		height: 11px;
+		content: "";
+		position: absolute;
+		width: 100%;
+		margin-left: 10px;
+	}
+}
+
+// uiBox
+// --------------------------------------------------
+.uiBox() {
+	.border-radius(@baseBorderRadius);
+	.box-shadow(0px 2px 4px -1px rgba(35,44,48,0.18));
+	border: 1px solid @uiBoxBorder;
+	background: @uiBoxBg;
+	margin: 0 0 @baseLineHeight 0;
+	.title {
+		background-color:  @uiBoxHeadBg;
+		border-bottom: 1px solid @borderColor;
+		.box-shadow(0 1px 2px rgba(13, 13, 13, 0.2));
+		.border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+		padding: 8px 10px;
+		line-height: @baseLineHeight;
+		margin: 0;
+		word-wrap: break-word;
+		.actionIcon {
+			margin: -3px 0;
+		}
+	}
+	.uiContentBox {
+		padding: 15px;
+		& + .title {
+			.border-radius(0);
+			border-top: 1px solid @borderColor;
+		}
+         & + .uiContentBox {
+           border-top: 1px solid @borderColor;
+
+         }
+          & + .noBorder {
+            border: none!important;
+          }
+          hr {
+            margin: 10px -15px;
+          }
+	}
+	&.roundedBottom {
+		.border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+		.title {
+			.border-radius(0);
+		}
+	}
+	&.roundedTop {
+		.border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+	}
+	&.uiGrayLightBox {
+		background: @uiBoxGray;
+	}
+	&.noRounded {
+		.border-radius(0);
+		.title {
+			.border-radius(0);
+		}
+	}
+    .footer {
+        background-color:  @uiBoxHeadBg;
+        border-top: 1px solid @borderColor;
+        .border-radius( 0 0 @baseBorderRadius @baseBorderRadius);
+        padding: 8px 10px;
+    }
+    .rowOdd {
+      background-color: @primaryBackgroundLight;
+    }
+}
+
+// Gray Light Box
+// --------------------------------------------------
+.uiGrayLightBox(){
+	padding: @gutterSizeBase;
+	border: 1px solid @borderColor;
+	background: @uiBoxGray;
+	.border-radius(@baseBorderRadius);
+	.box-shadow(0px 1px 2px rgba(0,0,0,.06));
+	label {
+		display: inline-block;
+	}
+	input {
+		margin-bottom: 0px;
+	}
+}
+
+.center() {
+	text-align: center;
+}
+
+// AVATAR
+// --------------------------------------------------
+.circleBorderAvatar(@size) {
+	#gradient .vertical(@baseBackground, @primaryBackground);
+	.square(@size);
+	.border-radius(100px);
+	.box-shadow(0px 2px 4px rgba(13px, 13px, 13px, 0.27));
+	border: 1px solid #b1b1b1;
+	padding: 5px;
+
+	img {
+		.border-radius(100px);
+		.square(@size);
+	}
+}
+
+.roundedCornerAvatar(@size, @radius) {
+	.square(@size);
+	img {
+		.border-radius(@radius);
+		.square(@size);
+	}
+}
+
+// avatarCircle for circle avatar 40px 40px
+// avatarSmallCircle for circle avatar 32px 32px
+// avatarMiniCircle for circle avatar 24px 24px
+
+.avatarCircle() {
+	.circleBorderAvatar(40px);
+}
+
+.avatarSmallCircle() {
+	.circleBorderAvatar(32px);
+}
+
+.avatarMiniCircle() {
+	.circleBorderAvatar(24px);
+}
+
+.avatarXLarge() {
+	.roundedCornerAvatar(120px, 4px);
+}
+
+.avatarLarge() {
+	.roundedCornerAvatar(100px, 4px);
+}
+
+.avatarXMedium() {
+	.roundedCornerAvatar(75px, 4px);
+}
+
+.avatarMedium() {
+	.roundedCornerAvatar(50px, 3px);
+}
+
+.avatarXSmall() {
+	.roundedCornerAvatar(36px, 2px);
+}
+
+.avatarSmall() {
+	.roundedCornerAvatar(26px, 2px);
+}
+
+.avatarMini() {
+	.roundedCornerAvatar(20px, 2px);
+}
+
+.avatarTiny() {
+	.roundedCornerAvatar(16px, 2px);
+}
+
+.squareBorderAvatar(@size) {
+	#gradient .vertical(@baseBackground, @primaryBackground);
+	.square(@size);
+	.border-radius(4px);
+	.box-shadow(0px 2px 4px rgba(13px, 13px, 13px, 0.27));
+	border: 1px solid @borderColor;
+	padding: 7px;
+	display: block;
+
+	img {
+		.border-radius(4px);
+		.square(@size);
+	}
+}
+
+.avatarLargeWithBorder() {
+	.squareBorderAvatar(100px);
+}
+
+.avatarXLargeWithBorder() {
+	.squareBorderAvatar(120px);
+}
+
+
+// Round Corner
+// --------------------------------------------------
+.roundCornerBoxWithTitle() {
+	background: @baseBackground;
+	border: 1px solid @borderColor;
+	.border-radius(4px);
+	.box-shadow(0px 1px 2px rgba(0, 0, 0, 0.08));
+
+	.titleBox {
+		.border-radius(4px 4px 0px 0px );
+		.box-shadow(0px 1px 2px rgba(13, 13, 13, 0.08));
+		background: @primaryBackground;
+		border-bottom: 1px solid @borderColor;
+		margin: 0px;
+		line-height: @baseLineHeight ;
+		font-weight: @headingsFontWeight;
+		color: @baseColorDark;
+		padding: 8px 10px;
+		word-wrap: break-word;
+	}
+}
+
+// Create Margin And Padding Utilities Class
+// --------------------------------------------------
+.marginAndPadding(@maxValue, @counter: 5, @minValue: 0, @unit: px)
+{
+
+  // The Loop
+  .loop_margin_padding (@index) when (@index >= @minValue) {
+
+    // Padding
+    .pd@{index} {padding: ~"@{index}@{unit}";}
+    .pdT@{index} {padding-top: ~"@{index}@{unit}";}
+    .pdR@{index} {padding-right: ~"@{index}@{unit}";}
+    .pdB@{index} {padding-bottom: ~"@{index}@{unit}";}
+    .pdL@{index} {padding-left: ~"@{index}@{unit}";}
+
+    // Padding Important
+    .pd@{index}-ipt {padding: ~"@{index}@{unit}!important";}
+    .pdT@{index}-ipt {padding-top: ~"@{index}@{unit}!important";}
+    .pdR@{index}-ipt {padding-right: ~"@{index}@{unit}!important";}
+    .pdB@{index}-ipt {padding-bottom: ~"@{index}@{unit}!important";}
+    .pdL@{index}-ipt {padding-left: ~"@{index}@{unit}!important";}
+
+    // Padding Horizatial
+    .pd-0-@{index} {padding: 0 ~"@{index}@{unit}";}
+    .pd-0-@{index}-ipt {padding: 0 ~"@{index}@{unit}!important";}
+
+
+    // Padding Vertical
+    .pd-@{index}-0 {padding: ~"@{index}@{unit}" 0;}
+    .pd-@{index}-0-ipt {padding: ~"@{index}@{unit}" 0!important;}
+
+      // Margin
+    .mg@{index} {margin: ~"@{index}@{unit}";}
+    .mgT@{index} {margin-top: ~"@{index}@{unit}";}
+    .mgR@{index} {margin-right: ~"@{index}@{unit}";}
+    .mgB@{index} {margin-bottom: ~"@{index}@{unit}";}
+    .mgL@{index} {margin-left: ~"@{index}@{unit}";}
+
+      // Margin Important
+    .mg@{index}-ipt {margin: ~"@{index}@{unit}!important";}
+    .mgT@{index}-ipt {margin-top: ~"@{index}@{unit}!important";}
+    .mgR@{index}-ipt {margin-right: ~"@{index}@{unit}!important";}
+    .mgB@{index}-ipt {margin-bottom: ~"@{index}@{unit}!important";}
+    .mgL@{index}-ipt {margin-left: ~"@{index}@{unit}!important";}
+
+      // margin Horizatial
+    .mg-0-@{index} {margin: 0 ~"@{index}@{unit}";}
+    .mg-0-@{index}-ipt {margin: 0 ~"@{index}@{unit}!important";}
+
+      // margin Vertical
+    .mg-@{index}-0 {margin: ~"@{index}@{unit}" 0;}
+    .mg-@{index}-0-ipt {margin: ~"@{index}@{unit}" 0!important;}
+
+      // next iteration
+    .loop_margin_padding(@index - @counter);
+    }
+
+  // end the loop when index is 0
+  .loop_margin_padding (0) {}
+
+  // "call" the loopingClass the first time with highest value
+  .loop_margin_padding (@maxValue);
+}
+
+
+
+.loading-action {
+  -webkit-animation: loading 1s infinite linear;
+  animation: loading 1s infinite linear;
+}
+@-webkit-keyframes loading{
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes loading {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+// Placeholder text
+// -------------------------
+.placeholder(@color: @placeholderText) {
+  &::-webkit-input-placeholder {
+    color: @color;
+  }
+  &:-moz-placeholder {
+    color: @color;
+  }
+  &::-moz-placeholder {
+    color: @color;
+  }
+  &:-ms-input-placeholder {
+    color: @color;
+  }
+}
+.box-sizing(@value) {
+  -webkit-box-sizing: @value; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: @value; /* Firefox, other Gecko */
+  box-sizing: @value;
+}
+
+//resize
+
+.resize() {
+  width: 30px;
+  .iconControll {
+    #gradient > .vertical(@baseBackground, @primaryBackground);
+    border: 1px solid @borderColor;
+    border-right: 0;
+    padding: 4px 0;
+    margin-top: 7px;
+    display: block;
+    float: left;
+    margin-left: 2px;
+    outline: none;
+    cursor: pointer;
+    .border-radius(@borderRadiusSmall 0  0 @borderRadiusSmall);
+  }
+  &.resizeLt {
+    a {
+      .border-radius(0 @borderRadiusSmall @borderRadiusSmall 0);
+      border-right: 1px solid @borderColor;
+      border-left: 0;
+      margin-left: 0px;
+    }
+    .line {
+      display: none;
+    }
+  }
+  .line {
+    width:2px;
+    border-left: 1px solid @borderColor;
+    margin:auto;
+    min-height: 300px;
+    cursor: col-resize;
+  }
+}
+
+.baseColorLight() {
+  color: @baseColorLight;
+}
+
+
+
+// CSS3 PROPERTIES
+// --------------------------------------------------
+// Border Radius
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+// Single Corner Border Radius
+.border-top-left-radius(@radius) {
+  -webkit-border-top-left-radius: @radius;
+  -moz-border-radius-topleft: @radius;
+  border-top-left-radius: @radius;
+}
+.border-top-right-radius(@radius) {
+  -webkit-border-top-right-radius: @radius;
+  -moz-border-radius-topright: @radius;
+  border-top-right-radius: @radius;
+}
+.border-bottom-right-radius(@radius) {
+  -webkit-border-bottom-right-radius: @radius;
+  -moz-border-radius-bottomright: @radius;
+  border-bottom-right-radius: @radius;
+}
+.border-bottom-left-radius(@radius) {
+  -webkit-border-bottom-left-radius: @radius;
+  -moz-border-radius-bottomleft: @radius;
+  border-bottom-left-radius: @radius;
+}
+// Single Side Border Radius
+.border-top-radius(@radius) {
+  .border-top-right-radius(@radius);
+  .border-top-left-radius(@radius);
+}
+.border-right-radius(@radius) {
+  .border-top-right-radius(@radius);
+  .border-bottom-right-radius(@radius);
+}
+.border-bottom-radius(@radius) {
+  .border-bottom-right-radius(@radius);
+  .border-bottom-left-radius(@radius);
+}
+.border-left-radius(@radius) {
+  .border-top-left-radius(@radius);
+  .border-bottom-left-radius(@radius);
+}
+
+
+// Button backgrounds
+// ------------------
+.buttonBackground(@startColor, @endColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
+  // gradientBar will set the background to a pleasing blend of these, to support IE<=9
+  .gradientBar(@startColor, @endColor, @textColor, @textShadow);
+  *background-color: @endColor; /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+  .reset-filter();
+  // in these cases the gradient won't cover the background, so we override
+  &:hover, &:focus, &:active, &.active, &.disabled, &[disabled] {
+    color: @textColor;
+    background-color: @endColor;
+    *background-color: darken(@endColor, 5%);
+  }
+  // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
+  &:active,
+  &.active {
+    background-color: darken(@endColor, 10%) e("\9");
+  }
+}
+
+
+// Gradient Bar Colors for buttons and alerts
+.gradientBar(@primaryColor, @secondaryColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
+  color: @textColor;
+  text-shadow: @textShadow;
+  #gradient > .vertical(@primaryColor, @secondaryColor);
+  border-color: @secondaryColor @secondaryColor darken(@secondaryColor, 15%);
+  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) fadein(rgba(0,0,0,.1), 15%);
+}
+// Gradients
+#gradient {
+  .horizontal(@startColor: #555, @endColor: #333) {
+    background-color: @endColor;
+    background-image: -moz-linear-gradient(left, @startColor, @endColor); // FF 3.6+
+    background-image: -webkit-gradient(linear, 0 0, 100% 0, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
+    background-image: -webkit-linear-gradient(left, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -o-linear-gradient(left, @startColor, @endColor); // Opera 11.10
+    background-image: linear-gradient(to right, @startColor, @endColor); // Standard, IE10
+    background-repeat: repeat-x;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",argb(@startColor),argb(@endColor))); // IE9 and down
+  }
+  .vertical(@startColor: #555, @endColor: #333) {
+    background-color: mix(@startColor, @endColor, 60%);
+    background-image: -moz-linear-gradient(top, @startColor, @endColor); // FF 3.6+
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
+    background-image: -webkit-linear-gradient(top, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -o-linear-gradient(top, @startColor, @endColor); // Opera 11.10
+    background-image: linear-gradient(to bottom, @startColor, @endColor); // Standard, IE10
+    background-repeat: repeat-x;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down
+  }
+  .directional(@startColor: #555, @endColor: #333, @deg: 45deg) {
+    background-color: @endColor;
+    background-repeat: repeat-x;
+    background-image: -moz-linear-gradient(@deg, @startColor, @endColor); // FF 3.6+
+    background-image: -webkit-linear-gradient(@deg, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -o-linear-gradient(@deg, @startColor, @endColor); // Opera 11.10
+    background-image: linear-gradient(@deg, @startColor, @endColor); // Standard, IE10
+  }
+  .horizontal-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
+    background-color: mix(@midColor, @endColor, 80%);
+    background-image: -webkit-gradient(left, linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
+    background-image: -webkit-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
+    background-image: -moz-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
+    background-image: -o-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
+    background-image: linear-gradient(to right, @startColor, @midColor @colorStop, @endColor);
+    background-repeat: no-repeat;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
+  }
+  .vertical-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
+    background-color: mix(@midColor, @endColor, 80%);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
+    background-image: -webkit-linear-gradient(@startColor, @midColor @colorStop, @endColor);
+    background-image: -moz-linear-gradient(top, @startColor, @midColor @colorStop, @endColor);
+    background-image: -o-linear-gradient(@startColor, @midColor @colorStop, @endColor);
+    background-image: linear-gradient(@startColor, @midColor @colorStop, @endColor);
+    background-repeat: no-repeat;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
+  }
+  .radial(@innerColor: #555, @outerColor: #333) {
+    background-color: @outerColor;
+    background-image: -webkit-gradient(radial, center center, 0, center center, 460, from(@innerColor), to(@outerColor));
+    background-image: -webkit-radial-gradient(circle, @innerColor, @outerColor);
+    background-image: -moz-radial-gradient(circle, @innerColor, @outerColor);
+    background-image: -o-radial-gradient(circle, @innerColor, @outerColor);
+    background-repeat: no-repeat;
+  }
+  .striped(@color: #555, @angle: 45deg) {
+    background-color: @color;
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, rgba(255,255,255,.15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, rgba(255,255,255,.15)), color-stop(.75, rgba(255,255,255,.15)), color-stop(.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+  }
+}
+// Reset filters for IE
+.reset-filter() {
+  filter: e(%("progid:DXImageTransform.Microsoft.gradient(enabled = false)"));
+}
+
+
+
+// FONTS
+// --------------------------------------------------
+#font {
+  #family {
+    .serif() {
+      font-family: @serifFontFamily;
+    }
+    .sans-serif() {
+      font-family: @sansFontFamily;
+    }
+    .monospace() {
+      font-family: @monoFontFamily;
+    }
+  }
+  .shorthand(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    font-size: @size;
+    font-weight: @weight;
+    line-height: @lineHeight;
+  }
+  .serif(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    #font > #family > .serif;
+    #font > .shorthand(@size, @weight, @lineHeight);
+  }
+  .sans-serif(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    #font > #family > .sans-serif;
+    #font > .shorthand(@size, @weight, @lineHeight);
+  }
+  .monospace(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    #font > #family > .monospace;
+    #font > .shorthand(@size, @weight, @lineHeight);
+  }
+}
+
+.ie7-restore-left-whitespace() {
+  *margin-left: .3em;
+  &:first-child {
+    *margin-left: 0;
+  }
+}
+.ie7-restore-right-whitespace() {
+  *margin-right: .3em;
+}
+
+
+
+// Mixin for form field states
+.formFieldState(@textColor: #555, @borderColor: #ccc, @backgroundColor: #f5f5f5) {
+  // Set the text color
+  .control-label,
+  .help-block,
+  .help-inline {
+    color: @textColor;
+  }
+  // Style inputs accordingly
+  .checkbox,
+  .radio,
+  input,
+  select,
+  textarea {
+    color: @textColor;
+  }
+  input,
+  select,
+  textarea {
+    border-color: @borderColor;
+    .box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
+    &:focus {
+      border-color: darken(@borderColor, 10%);
+      @shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten(@borderColor, 20%);
+      .box-shadow(@shadow);
+    }
+  }
+  // Give a small background color for input-prepend/-append
+  .input-prepend .add-on,
+  .input-append .add-on {
+    color: @textColor;
+    background-color: @backgroundColor;
+    border-color: @textColor;
+  }
+}
+
+// IE7 inline-block
+// ----------------
+.ie7-inline-block() {
+  *display: inline; /* IE7 inline-block hack */
+  *zoom: 1;
+}
+
+
+// Block level inputs
+.input-block-level {
+  display: block;
+  width: 100%;
+  min-height: @inputHeight; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
+  .box-sizing(border-box); // Makes inputs behave like true block-level elements
+}
